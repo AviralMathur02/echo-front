@@ -1,0 +1,254 @@
+// client/src/pages/profile/profile.scss
+
+@import "../../style.scss"; // Assuming this contains your @include themify and $themes
+
+.profile {
+  @include themify($themes) {
+    background-color: themed("bgSoft");
+    min-height: 100vh; // Background color for the entire profile page
+
+    .images {
+      width: 100%;
+      height: 300px; // Fixed height for the cover image container
+      position: relative; // Needed for positioning the profile picture
+
+      .cover {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; // Ensures the cover image fills the container without distortion
+      }
+
+      .profilePic {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%; // Makes the profile picture round
+        object-fit: cover;
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin: auto; // Centers the profile picture horizontally
+        top: 95px; // Positions the profile picture 200px from the top of the .images container
+        border: 4px solid themed("bg"); // Adds a border around the profile picture
+        z-index: 2; // Ensures the profile picture is rendered on top of overlapping elements
+      }
+    }
+
+    .profileContainer {
+      padding: 20px 70px; // General padding for the profile content area
+
+      @include mobile {
+        padding: 10px; // Reduced padding for mobile
+      }
+
+      @include tablet {
+        padding: 20px; // Adjusted padding for tablets
+      }
+
+      .uInfo {
+        height: 180px; // Fixed height for the user info block
+        -webkit-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+        -moz-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+        box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+        border-radius: 20px;
+        background-color: themed("bg");
+        color: themed("textColor");
+        padding: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        margin-top: -60px; // Adjust this value (-60px is a good starting point)
+
+        @include mobile {
+          flex-direction: column; // Stack elements vertically on mobile
+          height: auto; // Allow height to adjust based on content
+          padding: 20px;
+          margin-top: 100px; // Adjust margin-top specifically for mobile if needed
+        }
+
+        .left {
+          flex: 1;
+          display: flex;
+          gap: 10px; // Space between social icons
+
+          @include tablet {
+            flex-wrap: wrap; // Allow icons to wrap on multiple lines
+            justify-content: center; // Center icons on tablet
+          }
+
+          a {
+            color: themed("textColorSoft"); // Muted color for social icons
+            font-size: 20px;
+
+            &:hover {
+              color: themed("linkHoverColor"); // Example hover color for icons
+            }
+          }
+        }
+
+        .center {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 8px; // Space between elements in the center block
+
+          span {
+            font-size: 30px;
+            font-weight: 500;
+            margin-bottom: 5px; // Space below the user's name
+          }
+
+          .info {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center; // Center info items
+            flex-wrap: wrap; // Allow items to wrap
+            gap: 15px; // Space between individual info items (e.g., city, website)
+            margin-bottom: 10px; // Space below info items
+
+            .item {
+              display: flex;
+              align-items: center;
+              gap: 5px;
+              color: themed("textColorSoft");
+
+              span {
+                font-size: 14px;
+              }
+
+              .MuiSvgIcon-root {
+                font-size: 18px;
+              }
+            }
+          }
+
+          // **NEW STYLING FOR FOLLOW STATS**
+          .followStats {
+            display: flex;
+            gap: 25px; // Space between "Followers" and "Following" counts
+            margin-top: 5px; // Adjust as needed for vertical spacing
+            margin-bottom: 15px; // Adjust as needed for vertical spacing
+
+            .stat-item {
+              display: flex;
+              flex-direction: column; // Stack number above text
+              align-items: center; // Center content horizontally
+              cursor: pointer; // Indicate clickable for modals
+              font-size: 14px; // Default text size
+              color: themed("textColorSoft"); // Muted color for the text
+
+              b {
+                font-size: 18px; // Larger size for the number
+                font-weight: 600; // Bold for the number
+                color: themed(
+                  "textColor"
+                ); // More prominent color for the number
+              }
+              // Hover effect for the entire stat item
+              &:hover {
+                color: themed("textColor"); // Make text darker on hover
+                b {
+                  color: themed(
+                    "linkHoverColor"
+                  ); // Change number color on hover
+                }
+              }
+            }
+          }
+
+          button {
+            border: none;
+            background-color: #5271ff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+
+            &:hover {
+              background-color: darken(#5271ff, 10%);
+            }
+            &:disabled {
+              background-color: themed("bgSoft");
+              color: themed("textColorSoft");
+              cursor: not-allowed;
+            }
+          }
+        }
+
+        .right {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 10px;
+          position: relative; // Needed for positioning the delete menu
+
+          .MuiSvgIcon-root {
+            font-size: 24px;
+            color: themed("textColorSoft");
+            cursor: pointer;
+            &:hover {
+              color: themed("textColor");
+            }
+          }
+
+          .more-options-container {
+            // Ensure this class matches your JSX
+            position: relative;
+
+            .options-menu {
+              // Ensure this class matches your JSX
+              position: absolute;
+              top: 30px; // Adjust as needed to position below the icon
+              right: 0; // Align to the right of the icon
+              background-color: themed("bg");
+              border: 1px solid themed("border");
+              box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+              padding: 10px;
+              z-index: 10;
+              border-radius: 5px;
+              display: flex;
+              flex-direction: column;
+              min-width: 150px;
+
+              button {
+                width: 100%;
+                background: none; // Remove default button background
+                color: themed("textColor"); // Default text color for menu items
+                border: none;
+                padding: 8px 12px;
+                cursor: pointer;
+                border-radius: 5px;
+                font-weight: normal;
+                text-align: left;
+                transition: background-color 0.2s ease;
+
+                &:hover {
+                  background-color: themed(
+                    "bgSoft"
+                  ); // Hover background for menu items
+                }
+
+                // Specific style for the delete button
+                &.delete-button {
+                  // Add this class to your delete button in JSX
+                  color: #f44336; // Red color for delete button
+                  &:hover {
+                    background-color: lighten(
+                      #f44336,
+                      40%
+                    ); // Lighter red hover
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

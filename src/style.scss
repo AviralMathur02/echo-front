@@ -1,0 +1,68 @@
+$themes: (
+  light: (
+    textColor: #000,
+    bg: white,
+    logo: darkblue,
+    bgSoft: #f6f3f3,
+    textColorSoft: #555,
+    border: lightgray,
+    blueColorPrimary: #007bff,
+    blueColorSecondary: #0056b3,
+    redColor: #f0544f,
+    blueColorPrimary-light: #6699ff,
+    blueColorSecondary-light: #4d8eff,
+    glowColorPulse: #007bff,
+    // NEW: Define glow color for light mode
+  ),
+  dark: (
+    textColor: whitesmoke,
+    bg: #222,
+    logo: white,
+    bgSoft: #333,
+    textColorSoft: whitesmoke,
+    border: #444,
+    blueColorPrimary: #1a73e8,
+    blueColorSecondary: #2962ff,
+    redColor: #f0544f,
+    blueColorPrimary-light: #4285f4,
+    blueColorSecondary-light: #3367d6,
+    glowColorPulse: #a020f0,
+    // NEW: Define glow color for dark mode
+  ),
+);
+
+@mixin themify($themes) {
+  @each $theme, $map in $themes {
+    .theme-#{$theme} & {
+      $theme-map: () !global;
+      @each $key, $submap in $map {
+        $value: map-get(map-get($themes, $theme), "#{$key}");
+        $theme-map: map-merge(
+          $theme-map,
+          (
+            $key: $value,
+          )
+        ) !global;
+      }
+      @content;
+      $theme-map: null !global;
+    }
+  }
+}
+
+@function themed($key) {
+  @return map-get($theme-map, $key);
+}
+
+@mixin mobile {
+  @media (max-width: 480px) {
+    @content;
+  }
+}
+@mixin tablet {
+  @media (max-width: 960px) {
+    @content;
+  }
+}
+
+// Ensure any other global styles you have are below these mixins and functions

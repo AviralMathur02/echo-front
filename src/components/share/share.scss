@@ -1,0 +1,100 @@
+// share.scss
+
+@import "../../style.scss";
+
+.share {
+  @include themify($themes) {
+    -webkit-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+    -moz-box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+    box-shadow: 0px 0px 25px -10px rgba(0, 0, 0, 0.38);
+    border-radius: 20px;
+    background-color: themed("bg");
+    color: themed("textColor");
+    margin-bottom: 20px;
+
+    .container {
+      padding: 20px;
+      .top {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        img {
+          // This targets the user's profile picture in the share box
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+
+        input {
+          border: none;
+          outline: none;
+          padding: 20px 10px;
+          background-color: transparent;
+          width: 60%;
+          color: themed("textColor");
+        }
+
+        // === ADD THIS NEW CSS RULE FOR THE IMAGE PREVIEW ===
+        .right {
+          // This targets the div containing the preview image
+          .file {
+            // This targets the img with className="file" in Share.jsx
+            width: 120px; // Adjust as needed for a good preview size
+            height: auto; // Crucial: Maintain aspect ratio
+            max-height: 120px; // Optional: prevent very tall previews
+            border-radius: 0; // Make it rectangular (remove circle)
+            object-fit: contain; // Ensure the entire image is visible within the preview box
+            margin-left: 10px; // Add some spacing
+            // Add any other desired styles like a border, e.g., border: 1px solid themed("border");
+          }
+        }
+        // === END OF NEW CSS RULE ===
+      }
+
+      hr {
+        margin: 20px 0px;
+        border: none;
+        height: 0.5px;
+        background-color: themed("border");
+      }
+
+      .bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .left {
+          display: flex;
+          align-items: center;
+          gap: 20px;
+
+          .item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+
+            img {
+              height: 20px;
+            }
+
+            span {
+              font-size: 12px;
+              color: gray;
+            }
+          }
+        }
+        .right {
+          button {
+            border: none;
+            padding: 5px;
+            color: white;
+            cursor: pointer;
+            background-color: #5271ff;
+            border-radius: 3px;
+          }
+        }
+      }
+    }
+  }
+}

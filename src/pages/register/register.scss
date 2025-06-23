@@ -1,0 +1,243 @@
+// src/pages/register/Register.scss // this is my change
+
+.register {
+  height: 100vh;
+  background-color: rgb(193, 190, 255);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px; // Add some padding around the edges
+  box-sizing: border-box; // Ensure padding doesn't cause overflow
+
+  .card {
+    width: 80%; // Make it a bit wider on larger screens to give content more space
+    max-width: 1200px; // Cap the max width for very large screens
+    display: flex;
+    flex-direction: row-reverse; // Keep the right panel on the left for wide screens
+    background-color: white;
+    border-radius: 10px;
+    min-height: 500px; // Slightly reduce min-height from 600px, or make it flexible
+    height: auto; // Allow height to adjust based on content
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); // Add a subtle shadow
+
+    .left {
+      // This is the left panel in the original structure, but it's now on the right side due to row-reverse
+      flex: 1;
+      background: linear-gradient(rgba(39, 11, 96, 0.5), rgba(39, 11, 96, 0.5)),
+        url("https://images.pexels.com/photos/4881619/pexels-photo-4881619.jpeg?auto=compress&cs=tinysrgb&w=1600")
+          center;
+      background-size: cover;
+      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      color: white;
+      justify-content: center; // Vertically center content in left pane
+      align-items: flex-start; // Align items to the start
+
+      h1 {
+        // Make font size responsive using a combination of viewport units and clamp()
+        // clamp(min-size, ideal-size, max-size)
+        font-size: clamp(
+          40px,
+          6vw,
+          100px
+        ); // Scales from 40px to 100px, ideal is 6vw
+        line-height: 1.1; // Adjust line height for better readability
+        text-align: left; // Ensure text alignment
+      }
+
+      p {
+        font-size: clamp(
+          16px,
+          2vw,
+          22px
+        ); // Make paragraph font size responsive
+        line-height: 1.5;
+      }
+
+      span {
+        font-size: clamp(14px, 1.5vw, 18px);
+      }
+
+      button {
+        width: 50%;
+        min-width: 120px; // Ensure button doesn't get too small
+        padding: 10px;
+        border: none;
+        background-color: white;
+        color: rebeccapurple;
+        font-weight: bold;
+        font-size: 14px; // Ensure button text is readable
+        cursor: pointer;
+        border-radius: 5px; // Add border-radius for aesthetics
+        transition: background-color 0.3s ease;
+        &:hover {
+          background-color: #f0f0f0;
+        }
+      }
+    }
+
+    .right {
+      // This is the right panel in the original structure, but it's now on the left side due to row-reverse
+      flex: 1;
+      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      gap: 50px;
+      justify-content: center;
+      align-items: center; // Center content horizontally
+
+      h1 {
+        color: #555;
+        font-size: clamp(28px, 4vw, 40px); // Responsive heading for right
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        width: 80%; // Inputs take 80% of right pane width
+        max-width: 400px; // Max width for inputs for readability
+
+        input {
+          border: none;
+          border-bottom: 1px solid lightgray;
+          padding: 20px 10px;
+          font-size: 1rem; // Ensure readable font size
+          &:focus {
+            outline: none;
+            border-bottom-color: rebeccapurple; // Add focus styling
+          }
+          // NEW: Style for inputs with validation errors
+          &.input-error {
+            border-bottom-color: #f0544f; /* Red border for error */
+          }
+        }
+
+        // NEW: Style for error messages
+        .error {
+          color: #f0544f; /* Red color for error text */
+          font-size: 0.85rem;
+          margin-top: -25px; /* Adjust margin to pull it closer to the input */
+          align-self: flex-start; /* Align error message to the start of the form */
+        }
+
+        button {
+          width: 50%;
+          min-width: 120px; // Ensure button doesn't get too small
+          padding: 10px;
+          border: none;
+          background-color: #938eef;
+          color: white;
+          font-weight: bold;
+          cursor: pointer;
+          border-radius: 5px; // Add border-radius for aesthetics
+          transition: background-color 0.3s ease;
+          &:hover {
+            background-color: darken(#938eef, 10%);
+          }
+        }
+      }
+    }
+  }
+}
+
+// --- Media Queries for Smaller Screens / Zoom Out ---
+@media (max-width: 992px) {
+  // Tablet size and smaller
+  .register {
+    padding: 15px; // Reduce overall padding
+  }
+  .card {
+    width: 90%; // Make card wider to use more space
+    min-height: 400px; // Allow card to be shorter
+  }
+  .left,
+  .right {
+    padding: 30px; // Reduce inner padding
+    gap: 20px; // Reduce gaps
+  }
+  .left h1 {
+    font-size: clamp(30px, 5vw, 60px); // Further scale down h1 on left
+  }
+}
+
+@media (max-width: 768px) {
+  // Mobile landscape/tablet portrait and smaller
+  .register {
+    align-items: flex-start; // Start alignment to prevent vertical squish
+    padding-top: 50px; // Add some top padding
+    padding-bottom: 50px; // Add some bottom padding
+    height: auto; // Allow login container to be taller than 100vh if content requires
+    min-height: 100vh; // Ensure it still takes full height if content is short
+  }
+
+  .card {
+    flex-direction: column; // Stack columns vertically (overrides row-reverse)
+    width: 95%; // Take almost full width on small screens
+    max-width: 500px; // Limit max width for larger mobile devices
+    min-height: unset; // Remove fixed min-height for cards
+    height: auto;
+  }
+
+  .left,
+  .right {
+    flex: unset; // Remove flex-grow property when stacked
+    width: 100%; // Each section takes full width
+    padding: 30px 20px; // Adjust padding
+    text-align: center; // Center text when stacked
+    align-items: center; // Center items horizontally
+    gap: 15px; // Reduce gap between elements
+  }
+
+  .left {
+    height: 300px; // Example fixed height for the background image section
+    justify-content: center; // Center content vertically within this fixed height
+  }
+  .left h1 {
+    font-size: clamp(25px, 8vw, 50px); // Adjust h1 size for mobile
+    line-height: 1.2;
+  }
+  .left p,
+  .left span {
+    font-size: clamp(12px, 3.5vw, 16px);
+  }
+  .left button {
+    width: 60%; // Button can be wider on mobile
+    max-width: 200px; // Max width for button
+  }
+
+  .right {
+    margin-top: 0; // No margin between stacked sections
+    padding-top: 30px; // Adjust padding
+  }
+
+  .right form {
+    width: 90%; // Form takes more width on mobile
+    max-width: 350px; // Limit max width for form
+  }
+  .right button {
+    width: 60%; // Button can be wider on mobile
+    max-width: 200px; // Max width for button
+  }
+}
+
+@media (max-width: 480px) {
+  // Very small mobile screens
+  .register {
+    padding: 10px;
+  }
+  .left,
+  .right {
+    padding: 20px 15px;
+  }
+  .left h1 {
+    font-size: clamp(20px, 10vw, 35px); // Even smaller h1
+  }
+  .left p,
+  .left span {
+    font-size: clamp(10px, 3.5vw, 14px); // Even smaller p/span
+  }
+}

@@ -1,0 +1,226 @@
+@import "../../style.scss";
+
+.rightBar {
+  @include themify($themes) {
+    flex: 3;
+    position: sticky;
+    top: 70px;
+    height: calc(100vh - 70px);
+    overflow-y: scroll;
+    background-color: themed("bgSoft");
+
+    @include mobile {
+      display: none;
+    }
+    @include tablet {
+      display: none;
+    }
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .container {
+      padding: 20px;
+
+      .item {
+        border-radius: 10px; /* Consistent rounded corners */
+        -webkit-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+        -moz-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+        box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: themed("bg");
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out; /* Add transition for highlight */
+
+        // --- NEW: Highlighted State for Explore/Notifications ---
+        &.highlighted {
+          animation: pulseGlow 1.5s forwards; /* Apply the animation */
+          transform: scale(1.01); /* Slightly increase size when highlighted */
+        }
+
+        @keyframes pulseGlow {
+          0% {
+            box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+            border-color: transparent;
+          }
+          50% {
+            box-shadow: 0px 0px 25px 5px themed("blueColorPrimary-light"); /* Glow effect */
+            border-color: themed(
+              "blueColorPrimary-light"
+            ); /* Add border glow */
+          }
+          100% {
+            box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+            border-color: transparent;
+          }
+        }
+        // --- END NEW ---
+
+        span {
+          color: gray;
+          font-weight: 500;
+          font-size: 14px;
+        }
+
+        .suggestions-list,
+        .explore-content,
+        .notifications-content {
+          margin-top: 0;
+        }
+
+        .suggestions-list,
+        .explore-content {
+          max-height: 250px;
+          overflow-y: auto;
+          padding-right: 5px;
+
+          &::-webkit-scrollbar {
+            width: 8px;
+            display: block;
+          }
+          &::-webkit-scrollbar-thumb {
+            background-color: themed("border");
+            border-radius: 4px;
+          }
+          &::-webkit-scrollbar-track {
+            background-color: themed("bgSoft");
+          }
+        }
+
+        // --- Explore Content Specific Styles ---
+        .explore-content {
+          .trending-tag-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+
+            .tag {
+              background-color: themed("blueColorPrimary-light");
+              color: white;
+              padding: 8px 15px;
+              border-radius: 8px;
+              font-size: 14px;
+              cursor: pointer;
+              transition: background-color 0.2s ease, transform 0.1s ease;
+              width: auto;
+              text-align: center;
+
+              &:hover {
+                background-color: themed("blueColorSecondary-light");
+                transform: translateY(-2px);
+              }
+            }
+          }
+          .note {
+            font-size: 12px;
+            color: themed("textColorSoft");
+            margin-top: 15px;
+            font-style: italic;
+          }
+        }
+
+        // --- Notifications Content Specific Styles ---
+        .notifications-content {
+          .placeholder-text {
+            color: themed("textColorSoft");
+            font-style: italic;
+            text-align: center;
+            padding: 20px 0;
+          }
+        }
+
+        .user {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin: 15px 0px;
+          padding: 8px 0;
+          border-radius: 5px;
+          transition: transform 0.5s ease-out, opacity 0.5s ease-out,
+            height 0.5s ease-out, margin 0.5s ease-out, padding 0.5s ease-out,
+            background-color 0.2s ease;
+          overflow: hidden;
+
+          &:hover {
+            background-color: themed("bgSoft");
+          }
+
+          &.animate-out {
+            opacity: 0;
+            transform: translateX(100%);
+            height: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            pointer-events: none;
+          }
+
+          .userInfo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+
+            img {
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+              object-fit: cover;
+            }
+
+            .online {
+              width: 12px;
+              height: 12px;
+              border-radius: 50%;
+              background-color: limegreen;
+              position: absolute;
+              top: 0;
+              left: 30px;
+            }
+
+            p {
+              color: themed("textColorSoft");
+            }
+
+            span {
+              font-weight: 500;
+              color: themed("textColor");
+            }
+          }
+
+          .buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            button {
+              border: none;
+              padding: 5px;
+              color: white;
+              cursor: pointer;
+              border-radius: 5px;
+              transition: background-color 0.2s ease;
+
+              &:first-child {
+                background-color: themed("blueColorPrimary");
+              }
+
+              &:last-child {
+                background-color: #f0544f; /* Explicit red color */
+              }
+              &:disabled {
+                background-color: #cccccc;
+                cursor: not-allowed;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

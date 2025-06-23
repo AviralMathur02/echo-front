@@ -1,0 +1,122 @@
+// client/src/components/comingSoonModal/comingSoonModal.scss
+
+@import "../../style.scss"; // Assuming this contains your themify mixin
+
+.comingSoonModal {
+  @include themify($themes) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000; /* Higher than other modals/elements */
+    animation: fadeIn 0.3s ease-out; /* Fade in animation */
+
+    .wrapper {
+      background: linear-gradient(
+        135deg,
+        themed("blueColorPrimary"),
+        /* Use your themed primary blue */ themed("blueColorSecondary")
+          /* Use your themed secondary blue */
+      );
+      color: white; /* Text color will be white on this gradient background */
+      padding: 40px; /* More padding for a substantial look */
+      border-radius: 15px; /* More rounded edges */
+      box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+      position: relative;
+      width: 90%; /* Responsive width */
+      max-width: 400px; /* Max width for larger screens */
+      text-align: center;
+      animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Pop in animation */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px; /* Space between icon, text, etc. */
+
+      .close-modal-button {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        cursor: pointer;
+        padding: 8px; /* Larger clickable area */
+        border-radius: 50%;
+        background-color: rgba(
+          255,
+          255,
+          255,
+          0.1
+        ); /* Slightly transparent white background */
+        transition: background-color 0.2s ease, transform 0.1s ease;
+        z-index: 10;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.2); /* More opaque on hover */
+          transform: scale(1.1);
+        }
+
+        .MuiSvgIcon-root {
+          color: white; /* White cross icon */
+          font-size: 24px; /* Adjust size */
+          filter: drop-shadow(
+            0 1px 2px rgba(0, 0, 0, 0.3)
+          ); /* Subtle shadow on icon */
+        }
+      }
+
+      .icon-container {
+        padding: 15px;
+        background-color: rgba(
+          255,
+          255,
+          255,
+          0.15
+        ); /* Light background for icon */
+        border-radius: 50%;
+        display: inline-flex; /* To contain the icon properly */
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px; /* Space below icon */
+      }
+
+      .ai-icon {
+        color: white;
+        font-size: 60px !important; /* Large AI icon */
+        filter: drop-shadow(
+          0 2px 5px rgba(0, 0, 0, 0.4)
+        ); /* Stronger shadow on AI icon */
+      }
+
+      .message-text {
+        font-size: 1.3rem; /* Larger font size for the message */
+        line-height: 1.5;
+        font-weight: 500;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3); /* Text shadow for pop */
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes popIn {
+      from {
+        transform: scale(0.7);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  }
+}

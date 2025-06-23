@@ -1,0 +1,137 @@
+@import "../../style.scss";
+
+.update {
+  @include themify($themes) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+
+    .wrapper {
+      // margin: auto; // Keep this if you want it vertically centered based on available space
+      width: 40%; // Keep your preferred width
+      // height: 70%; // <--- REMOVE OR COMMENT OUT THIS LINE. It prevents scrolling.
+      background-color: themed("bg");
+      padding: 50px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      -webkit-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+      -moz-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+      box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.09);
+      position: relative;
+      color: themed("textColor"); // Ensure text color is applied
+
+      // --- ADD THESE LINES FOR SCROLLABILITY ---
+      max-height: 90vh; /* Set a maximum height (e.g., 90% of viewport height) */
+      overflow-y: auto; /* Enable vertical scrolling if content exceeds max-height */
+      padding-right: 30px; /* Adjust padding to avoid content being hidden by scrollbar */
+      box-sizing: border-box; /* Ensures padding is included in the element's total width and height */
+
+      @include mobile {
+        width: 100%;
+        height: 100%;
+        max-height: 100vh; // On mobile, allow it to take full screen height and scroll
+        padding: 20px; // Adjust padding for smaller screens
+        padding-right: 20px; // Ensure scrollbar space on mobile too
+      }
+
+      h1 {
+        color: lightgrey; // This can be themed("textColor") if you want it consistent
+
+        @include mobile {
+          font-size: 20px;
+        }
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .files {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 50px;
+          justify-content: center; // Center the file inputs
+        }
+
+        label {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          color: gray;
+          font-size: 14px;
+          cursor: pointer; // Make the label itself clickable
+
+          .imgContainer {
+            position: relative;
+            // Added fixed dimensions for consistency
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+            border-radius: 50%; // For profile picture to be round
+
+            img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+
+            .icon {
+              position: absolute;
+              top: 0;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              margin: auto;
+              font-size: 30px;
+              color: lightgray;
+              // cursor: pointer; // Already on label, no need here unless specific
+            }
+          }
+        }
+
+        input {
+          padding: 5px;
+          border: none;
+          border-bottom: 1px solid themed("border");
+          color: themed("textColor"); // Use themed text color
+          background-color: transparent;
+          font-size: 16px; // Slightly larger for readability
+        }
+
+        button {
+          border: none;
+          padding: 10px;
+          cursor: pointer;
+          color: white;
+          background-color: #5271ff;
+          font-weight: bold; // Added bold for better look
+          border-radius: 5px; // Slight rounded corners
+          margin-top: 10px; // Add some space above the update button
+        }
+      }
+
+      .close {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        border: none;
+        background-color: #f0544f; // Red close button
+        padding: 5px 10px; // Adjusted padding
+        cursor: pointer;
+        color: white;
+        border-radius: 5px; // Rounded corners for button
+        font-size: 16px; // Readable font size
+      }
+    }
+  }
+}

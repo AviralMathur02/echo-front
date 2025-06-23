@@ -1,0 +1,249 @@
+@import "../../style.scss";
+
+.navbar {
+  @include themify($themes) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    height: 50px;
+    border-bottom: 1px solid themed("border");
+    position: sticky;
+    top: 0;
+    background-color: themed("bg");
+    color: themed("textColor");
+    z-index: 999;
+
+    .left {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+
+      // Original span for the logo text (will be replaced by .logo-text)
+      span {
+        font-weight: bold;
+        font-size: 20px;
+        color: themed("logo"); // Base color for the logo
+      }
+
+      // --- NEW: Styles for the "Echo" logo text ---
+      .logo-text {
+        font-weight: 400; // Share Tech Mono typically uses its default weight, no need for 800/900
+        font-size: 38px; // NEW: Increased font size for maximum impact
+        cursor: default; // Indicate it's not clickable by default
+        transition: all 0.3s ease; // Smooth transition for mode change
+        font-family: "Share Tech Mono", monospace; // NEW: Modern, digital font
+        letter-spacing: 4px; // NEW: Increased letter spacing for the digital segment feel
+
+        // Keyframes for the glowing animation
+        @keyframes pulse-glow {
+          0% {
+            // Updated text-shadow for stronger initial glow
+            text-shadow: 0 0 16px rgba(themed("glowColorPulse"), 0.8); // Stronger initial glow
+          }
+          50% {
+            // Updated text-shadow for stronger, wider glow
+            text-shadow: 0 0 40px rgba(themed("glowColorPulse"), 1),
+              // Max intensity
+              0 0 70px rgba(themed("glowColorPulse"), 0.9); // Wider spread
+          }
+          100% {
+            text-shadow: 0 0 16px rgba(themed("glowColorPulse"), 0.8);
+          }
+        }
+
+        // Dark Mode Glow - Now uses gradient blue for text and blue for glow
+        &.dark-mode-glow {
+          // Apply gradient to text for dark mode as well
+          background: linear-gradient(
+            90deg,
+            themed("blueColorPrimary"),
+            themed("blueColorSecondary")
+          );
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          color: themed(
+            "blueColorPrimary"
+          ); // Fallback for browsers not supporting text-fill-color
+
+          // Initial subtle glow for dark mode to match animation intensity
+          text-shadow: 0 0 20px rgba(themed("blueColorPrimary"), 1); // Even stronger initial text-shadow
+
+          animation: pulse-glow 2s infinite alternate; // Apply animation
+        }
+
+        // Light Mode Glow - Retains gradient blue and adjusts text-shadow
+        &.light-mode-glow {
+          background: linear-gradient(
+            90deg,
+            themed("blueColorPrimary"),
+            themed("blueColorSecondary")
+          );
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          color: transparent; // Fallback for non-webkit browsers
+
+          // Adjust text-shadow to align with stronger pulse-glow
+          text-shadow: 0 0 20px rgba(themed("blueColorPrimary"), 1); // Stronger initial glow
+          animation: pulse-glow 2s infinite alternate; // Apply animation
+        }
+      }
+      // --- END NEW: Styles for the "Echo" logo text ---
+    }
+
+    // --- Search Container for positioning dropdown ---
+    .search-container {
+      position: relative;
+      flex-grow: 1;
+      max-width: 700px;
+      min-width: 250px;
+      margin: 0 20px;
+
+      @include mobile {
+        display: none;
+      }
+
+      // Existing search bar styles
+      .search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid themed("border");
+        border-radius: 20px; /* Curved edges for the search bar */
+        padding: 5px;
+        width: 100%;
+
+        input {
+          border: none;
+          width: 100%;
+          background-color: transparent;
+          color: themed("textColor");
+          &:focus {
+            outline: none;
+          }
+        }
+      }
+
+      // --- Search Dropdown Styles ---
+      .search-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        max-height: 300px;
+        overflow-y: auto;
+        background-color: themed("bg");
+        border: 1px solid themed("border");
+        border-radius: 10px; /* Curved edges for the dropdown */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        margin-top: 5px;
+
+        .search-result-item {
+          display: flex;
+          align-items: center;
+          padding: 10px;
+          cursor: pointer;
+          border-bottom: none;
+          border-radius: 8px;
+          margin: 5px;
+          transition: background-color 0.2s ease, color 0.2s ease,
+            transform 0.1s ease;
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          &:hover {
+            background: linear-gradient(
+              to right,
+              themed("blueColorPrimary"),
+              themed("blueColorSecondary")
+            );
+            color: white;
+            transform: scale(1.02);
+          }
+
+          img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+          }
+
+          span {
+            font-weight: 500;
+            color: themed("textColor");
+            .search-result-item:hover & {
+              color: white;
+            }
+          }
+
+          .username {
+            font-size: 0.85em;
+            color: themed("textColorSoft");
+            .search-result-item:hover & {
+              color: white;
+            }
+          }
+        }
+
+        .no-results {
+          padding: 10px;
+          text-align: center;
+          color: themed("textColorSoft");
+          font-style: italic;
+        }
+      }
+    }
+
+    .right {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+
+      @include mobile {
+        display: none;
+      }
+
+      .user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 500;
+
+        @include tablet {
+          display: none;
+        }
+
+        img {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+      }
+
+      .item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+
+        span {
+          transform: translateY(-1px);
+          display: inline-block;
+        }
+      }
+    }
+  }
+}
+
+/* Global icon size for Navbar icons */
+.navbar-icon {
+  font-size: 28px !important; // Increased size, use !important to override Material-UI defaults if needed
+  // You can adjust this value to your preferred size
+}

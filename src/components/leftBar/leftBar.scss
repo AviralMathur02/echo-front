@@ -1,0 +1,117 @@
+@import "../../style.scss"; // <--- THIS LINE IS CRUCIAL! It imports your global themes.
+
+.leftBar {
+  @include themify($themes) {
+    flex: 2;
+    position: sticky;
+    top: 70px;
+    height: calc(100vh - 70px);
+    overflow: scroll;
+    background-color: themed("bg");
+    color: themed("textColor");
+
+    @include mobile {
+      display: none;
+    }
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .container {
+      padding: 20px;
+
+      hr {
+        margin: 20px 0px;
+        border: none;
+        height: 0.5px;
+        background-color: themed("border");
+      }
+
+      .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 20px; // Spacing between each menu item
+
+        span {
+          font-size: 12px;
+        }
+
+        .user {
+          display: flex;
+          align-items: center;
+          gap: 12px; // <--- Adjusted to match .item gap for better alignment
+          cursor: pointer;
+          margin-bottom: 20px; // Space after the user info
+          padding: 12px 15px; // <--- ADDED padding to match .item for consistent size
+          border-radius: 8px; // Rounded corners for consistency with .item
+          transition: background-color 0.2s ease, transform 0.1s ease; // Add hover effect
+
+          &:hover {
+            background: linear-gradient(
+              to right,
+              themed("blueColorPrimary"),
+              themed("blueColorSecondary")
+            );
+            color: white;
+            transform: scale(1.02);
+          }
+
+          img {
+            width: 38px; // <--- INCREASED from 30px to 38px for better visibility
+            height: 38px; // <--- INCREASED from 30px to 38px
+            border-radius: 50%;
+            object-fit: cover;
+          }
+
+          span {
+            font-size: 20px; // <--- INCREASED from 14px to 18px to match .item span
+            font-weight: 400; // <--- Changed from 500 to 400 to match .item span
+
+            // Change text color to white when the parent .user is hovered
+            .leftBar .container .menu .user:hover & {
+              color: white;
+            }
+          }
+        }
+
+        .item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 15px;
+          border-radius: 8px;
+          transition: background-color 0.2s ease, transform 0.1s ease;
+          cursor: pointer;
+
+          &:hover {
+            background: linear-gradient(
+              to right,
+              themed("blueColorPrimary"),
+              themed("blueColorSecondary")
+            );
+            color: white;
+            transform: scale(1.02);
+          }
+
+          .icon {
+            font-size: 28px;
+            color: themed("textColor");
+
+            .leftBar .container .menu .item:hover & {
+              color: white;
+            }
+          }
+
+          span {
+            font-size: 22px;
+            font-weight: 400;
+            .leftBar .container .menu .item:hover & {
+              color: white;
+            }
+          }
+        }
+      }
+    }
+  }
+}
