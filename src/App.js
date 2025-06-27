@@ -26,89 +26,112 @@ function App() {
   const { currentUser } = useContext(AuthContext);
   const { darkMode } = useContext(DarkModeContext);
 
+  // State to control the visibility of the FollowingModal
   const [openFollowingModalGlobal, setOpenFollowingModalGlobal] =
     useState(false);
+  // NEW: State to store the type of FollowingModal to open ('followers', 'following', 'friends')
+  const [followingModalType, setFollowingModalType] = useState("following"); // Default to 'following'
+
+  // States for highlighting sections in RightBar
   const [highlightExplore, setHighlightExplore] = useState(false);
   const [highlightNotifications, setHighlightNotifications] = useState(false);
-  // MODIFIED: State for Coming Soon Modal now includes its type
+
+  // State for Coming Soon Modal now includes its type
   const [comingSoonModalConfig, setComingSoonModalConfig] = useState({
     isOpen: false,
     type: null, // 'messages' or 'sharing'
   });
 
+  // Function to trigger highlight for Explore section in RightBar
   const triggerHighlightExplore = () => {
     setHighlightExplore(true);
+    // Remove highlight after 1.5 seconds
     setTimeout(() => setHighlightExplore(false), 1500);
   };
 
+  // Function to trigger highlight for Notifications section in RightBar
   const triggerHighlightNotifications = () => {
     setHighlightNotifications(true);
+    // Remove highlight after 1.5 seconds
     setTimeout(() => setHighlightNotifications(false), 1500);
   };
 
-  const handleOpenFollowingModalForCurrentUser = () => {
+  // MODIFIED: Function to open the FollowingModal for the current user
+  // It now accepts a 'type' argument from LeftBar
+  const handleOpenFollowingModalForCurrentUser = (type) => {
     if (currentUser && currentUser.user && currentUser.user.id) {
+      setFollowingModalType(type); // Set the type passed from LeftBar ('friends', 'followers', 'following')
       setOpenFollowingModalGlobal(true);
     } else {
       console.warn(
         "Attempted to open following modal without a logged-in user or valid ID."
       );
+      // If no user, redirect to login (or handle as appropriate for your app)
       window.location.href = "/login";
     }
   };
 
-  // MODIFIED: Function to open the Coming Soon Modal, now accepts a 'type' argument
+  // Function to open the Coming Soon Modal, now accepts a 'type' argument
   const handleOpenComingSoonModal = (type = "default") => {
     setComingSoonModalConfig({ isOpen: true, type });
   };
 
+  // Function to close the Coming Soon Modal
   const handleCloseComingSoonModal = () => {
     setComingSoonModalConfig({ isOpen: false, type: null });
   };
 
   const Layout = () => {
     return (
+      // Apply dark/light theme based on darkMode context
       <div className={`theme-${darkMode ? "dark" : "light"}`}>
+        {/* Navbar component, passes Coming Soon modal handler */}
         <Navbar onOpenComingSoonModal={handleOpenComingSoonModal} />
         <div style={{ display: "flex" }}>
+          {/* LeftBar component */}
           <LeftBar
+            // Pass the updated handler for opening FollowingModal (now accepts type)
             onOpenFollowingModal={handleOpenFollowingModalForCurrentUser}
             onTriggerHighlightExplore={triggerHighlightExplore}
             onTriggerHighlightNotifications={triggerHighlightNotifications}
             onOpenComingSoonModal={handleOpenComingSoonModal}
           />
+          {/* Outlet for rendering nested routes (Home, Profile) */}
           <div style={{ flex: 6 }}>
             <Outlet />
           </div>
+          {/* RightBar component, receives highlight states */}
           <RightBar
             highlightExplore={highlightExplore}
             highlightNotifications={highlightNotifications}
           />
         </div>
 
-        {/* Global FollowingModal */}
+        {/* Global FollowingModal conditionally rendered */}
         {openFollowingModalGlobal && currentUser && currentUser.user && (
           <FollowingModal
             setOpenModal={setOpenFollowingModalGlobal}
             userId={currentUser.user.id}
-            type="following"
+            type={followingModalType} // NEW: Pass the dynamic type here
           />
         )}
 
-        {/* MODIFIED: Coming Soon Modal now receives config */}
+        {/* Coming Soon Modal conditionally rendered */}
         {comingSoonModalConfig.isOpen && (
           <ComingSoonModal
             setOpenModal={handleCloseComingSoonModal}
-            messageType={comingSoonModalConfig.type} // Pass the type here
+            messageType={comingSoonModalConfig.type} // Pass the type received from Navbar/LeftBar
           />
         )}
       </div>
     );
   };
 
+  // ProtectedRoute component to guard routes requiring authentication
   const ProtectedRoute = ({ children }) => {
     const location = useLocation();
 
+    // If user is not authenticated, redirect to login
     if (!currentUser || !currentUser.user) {
       console.log(
         "ProtectedRoute: User not authenticated. Redirecting to /login."
@@ -116,6 +139,7 @@ function App() {
       return <Navigate to="/login" state={{ from: location }} replace />;
     }
 
+    // If user is authenticated and tries to access login/register, redirect to home
     if (
       (location.pathname === "/login" || location.pathname === "/register") &&
       currentUser &&
@@ -130,6 +154,7 @@ function App() {
     return children;
   };
 
+  // Define routes using createBrowserRouter
   const router = createBrowserRouter([
     {
       path: "/",
@@ -141,12 +166,10 @@ function App() {
       children: [
         {
           path: "/",
-          // Pass handleOpenComingSoonModal to Home
           element: <Home onOpenComingSoonModal={handleOpenComingSoonModal} />,
         },
         {
           path: "/profile/:id",
-          // Pass handleOpenComingSoonModal to Profile
           element: (
             <Profile onOpenComingSoonModal={handleOpenComingSoonModal} />
           ),

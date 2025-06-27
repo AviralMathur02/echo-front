@@ -1,10 +1,8 @@
 // client/src/pages/register/Register.jsx
-import { useState } from "react"; // Removed useEffect as real-time checks are gone
-import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./register.scss";
 import axios from "axios";
-// makeRequest is not strictly needed here if we are only using axios.post directly to localhost:8080/api/auth/register
-// and not other /users/check-* endpoints. Keeping axios for direct POST.
 
 const Register = () => {
   const [inputs, setInputs] = useState({
@@ -48,6 +46,22 @@ const Register = () => {
     if (!inputs.password.trim()) {
       newValidationErrors.password = "Password is required.";
       hasBasicErrors = true;
+    } else {
+      // NEW: Password complexity validation
+      const password = inputs.password;
+      if (password.length < 8) {
+        newValidationErrors.password =
+          "Password must be at least 8 characters long.";
+        hasBasicErrors = true;
+      } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        newValidationErrors.password =
+          "Password must include at least one special character.";
+        hasBasicErrors = true;
+      } else if (!/\d/.test(password)) {
+        newValidationErrors.password =
+          "Password must include at least one number.";
+        hasBasicErrors = true;
+      }
     }
     if (!inputs.name.trim()) {
       newValidationErrors.name = "Name is required.";
@@ -141,6 +155,7 @@ const Register = () => {
               value={inputs.password}
               className={validationErrors.password ? "input-error" : ""}
             />
+            {/* Display validation error for password */}
             {validationErrors.password && (
               <span className="error">{validationErrors.password}</span>
             )}

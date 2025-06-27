@@ -1,39 +1,41 @@
 // client/src/components/followingModal/FollowingModal.jsx
 
 import React, { useEffect } from "react";
-import "./followingModal.scss"; // Import the SCSS for styling
+import "./followingModal.scss";
 import { useQuery } from "@tanstack/react-query";
 import { makeRequest } from "../../axios";
-import { Link } from "react-router-dom"; // For linking to user profiles
-import { getImageSrc } from "../../utils/imageUtils"; // Assuming you have this utility
+import { Link } from "react-router-dom";
+import { getImageSrc } from "../../utils/imageUtils"; // Updated getImageSrc
 
-// Material-UI Icon for the close button
-import CloseIcon from "@mui/icons-material/Close"; // <--- NEW: Import CloseIcon
+import CloseIcon from "@mui/icons-material/Close";
 
 const FollowingModal = ({ setOpenModal, userId, type }) => {
-  // Determine the endpoint based on the 'type' prop (followers or following)
-  // --- FIX: Corrected endpoints to include '/list' as per RelationshipController.java ---
   const endpoint =
     type === "followers"
       ? `/relationships/followers/list?userId=${userId}`
-      : `/relationships/following/list?userId=${userId}`;
+      : type === "following"
+      ? `/relationships/following/list?userId=${userId}`
+      : `/relationships/friends/list?userId=${userId}`;
 
-  const queryKey = [type, userId]; // Query key dynamically changes based on type
-  const title = type === "followers" ? "Followers" : "Following";
+  const queryKey = [type, userId];
 
-  // Fetch the list of users (followers or following)
+  const title =
+    type === "followers"
+      ? "Followers"
+      : type === "following"
+      ? "Following"
+      : "Friends";
+
   const {
     isLoading,
     error,
     data: usersList,
   } = useQuery({
-    // Renamed 'data' to 'usersList' for clarity
     queryKey: queryKey,
     queryFn: () => makeRequest.get(endpoint).then((res) => res.data),
-    enabled: !!userId, // Only fetch if userId is provided
+    enabled: !!userId,
   });
 
-  // Handle closing the modal when clicking outside or pressing Escape
   useEffect(() => {
     const handleEscapeKey = (e) => {
       if (e.key === "Escape") {
@@ -42,9 +44,7 @@ const FollowingModal = ({ setOpenModal, userId, type }) => {
     };
 
     const handleClickOutside = (e) => {
-      // Check if the click occurred on the background div, not inside the modal content
       if (e.target.classList.contains("followingModal")) {
-        // Use your main modal class name
         setOpenModal(false);
       }
     };
@@ -60,21 +60,14 @@ const FollowingModal = ({ setOpenModal, userId, type }) => {
 
   return (
     <div className="followingModal">
-      {" "}
-      {/* Your background modal class */}
       <div className="wrapper">
-        {" "}
-        {/* Your modal content wrapper class */}
         <h1>{title}</h1>
-        {/* --- NEW: Close Button with Red Cross Icon --- */}
         <div className="close-modal-button" onClick={() => setOpenModal(false)}>
-          <CloseIcon /> {/* Material-UI Close Icon */}
+          <CloseIcon />
         </div>
-        {/* --- END NEW --- */}
+
         {error ? (
           <p className="error-message">
-            {" "}
-            {/* Added a class for potential styling */}
             Error loading {title.toLowerCase()}:{" "}
             {error.response?.data || error.message}
           </p>
@@ -87,16 +80,18 @@ const FollowingModal = ({ setOpenModal, userId, type }) => {
                 to={`/profile/${user.id}`}
                 style={{ textDecoration: "none", color: "inherit" }}
                 key={user.id}
-                onClick={() => setOpenModal(false)} // Close modal on user click
+                onClick={() => setOpenModal(false)}
               >
                 <div className="userItem">
                   <div className="userInfo">
                     <img
-                      src={
-                        getImageSrc(user.profilePic) ||
-                        "/upload/default-profile-pic.jpg"
-                      }
+                      src={getImageSrc(user.profilePic)} // This will now always return a valid string
                       alt={user.name}
+                      // *** REMOVE THE onError HANDLER FROM HERE ***
+                      // onError={(e) => {
+                      //   e.target.onerror = null;
+                      //   e.target.src = "/upload/default-profile-pic.jpg";
+                      // }}
                     />
                     <span>{user.name}</span>
                   </div>
@@ -108,10 +103,11 @@ const FollowingModal = ({ setOpenModal, userId, type }) => {
           <p>
             {type === "followers"
               ? "No followers yet."
-              : "Not following anyone yet."}
+              : type === "following"
+              ? "Not following anyone yet."
+              : "No friends yet."}
           </p>
         )}
-        {/* Removed the old text "close" button */}
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ import { getImageSrc } from "../../utils/imageUtils";
 
 // Accept new highlight trigger functions and Coming Soon modal function as props
 const LeftBar = ({
-  onOpenFollowingModal,
+  onOpenFollowingModal, // This function now needs to accept a 'type' argument
   onTriggerHighlightExplore,
   onTriggerHighlightNotifications,
   onOpenComingSoonModal,
@@ -35,6 +35,12 @@ const LeftBar = ({
   // Handle notifications click
   const handleNotificationsClick = () => {
     onTriggerHighlightNotifications(); // Trigger highlight in RightBar
+  };
+
+  // NEW: Handle Friends click to open FollowingModal with 'friends' type
+  const handleFriendsClick = () => {
+    // Call onOpenFollowingModal and pass 'friends' as the type
+    onOpenFollowingModal("friends");
   };
 
   return (
@@ -96,10 +102,10 @@ const LeftBar = ({
             <span>Messages</span>
           </div>
 
-          {/* Friends Link: Opens the FollowingModal for the current user (original behavior) */}
+          {/* Friends Link: Opens the FollowingModal for the current user with 'friends' type */}
           <div
             className="item"
-            onClick={onOpenFollowingModal}
+            onClick={handleFriendsClick} // Use the new handler
             style={{ cursor: "pointer" }}
           >
             <PeopleOutlineIcon className="icon" />
