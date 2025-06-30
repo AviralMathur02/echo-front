@@ -25,13 +25,14 @@ const Register = () => {
     setErr(null);
   };
 
-  const handleClick = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+    // Renamed from handleClick to handleSubmit for clarity
+    e.preventDefault(); // This is crucial to prevent default form submission and page refresh
 
     const newValidationErrors = {};
     let hasBasicErrors = false; // Flag for required fields/format errors
 
-    // --- Basic Frontend Validation (Required fields, email format) ---
+    // --- Basic Frontend Validation (Required fields, email format, password complexity, name length) ---
     if (!inputs.username.trim()) {
       newValidationErrors.username = "Username is required.";
       hasBasicErrors = true;
@@ -47,7 +48,7 @@ const Register = () => {
       newValidationErrors.password = "Password is required.";
       hasBasicErrors = true;
     } else {
-      // NEW: Password complexity validation
+      // Password complexity validation
       const password = inputs.password;
       if (password.length < 8) {
         newValidationErrors.password =
@@ -66,13 +67,17 @@ const Register = () => {
     if (!inputs.name.trim()) {
       newValidationErrors.name = "Name is required.";
       hasBasicErrors = true;
+    } else if (inputs.name.trim().length > 15) {
+      // Name length validation (less than 16 characters)
+      newValidationErrors.name = "Name must be less than 16 characters.";
+      hasBasicErrors = true;
     }
 
     // If there are any basic frontend validation errors, display them and stop.
     if (hasBasicErrors) {
       setValidationErrors(newValidationErrors);
       setErr("Please correct the highlighted errors."); // General message for basic issues
-      return;
+      return; // Stop the function here if validation fails
     }
 
     // If basic validation passes, attempt registration with the backend.
@@ -83,10 +88,10 @@ const Register = () => {
     } catch (error) {
       const backendErrorMessage = error.response?.data; // Get the specific message from the backend
 
+      // Check for specific backend errors and map them to validationErrors
       if (backendErrorMessage === "Username already exists!") {
         newValidationErrors.username = "This username already exists.";
-      }
-      if (backendErrorMessage === "Email already exists!") {
+      } else if (backendErrorMessage === "Email already exists!") {
         newValidationErrors.email = "This email already exists.";
       }
 
@@ -120,7 +125,8 @@ const Register = () => {
         </div>
         <div className="right">
           <h1>Register</h1>
-          <form>
+          {/* Attach handleSubmit to the form's onSubmit event and add noValidate */}
+          <form onSubmit={handleSubmit} noValidate>
             <input
               type="text"
               placeholder="Username"
@@ -168,13 +174,15 @@ const Register = () => {
               value={inputs.name}
               className={validationErrors.name ? "input-error" : ""}
             />
+            {/* Display validation error for name */}
             {validationErrors.name && (
               <span className="error">{validationErrors.name}</span>
             )}
 
             {/* Display general error (if any) */}
             {err && <span className="error">{err}</span>}
-            <button onClick={handleClick}>Register</button>
+            {/* The button can now simply be type="submit" */}
+            <button type="submit">Register</button>
           </form>
         </div>
       </div>

@@ -3,12 +3,12 @@ import { makeRequest } from "../../axios";
 import "./update.scss";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
- 
+
 // IMPORTANT CHANGE: Accept currentUser as a prop
 const Update = ({ setOpenUpdate, user, currentUser }) => {
   const [cover, setCover] = useState(null);
   const [profile, setProfile] = useState(null);
- 
+
   // Initialize texts with id from currentUser.user.id
   // Pre-fill existing user data for editing
   const [texts, setTexts] = useState({
@@ -20,7 +20,7 @@ const Update = ({ setOpenUpdate, user, currentUser }) => {
     websiteName: user.websiteName || "", // Initialize with existing data or empty string
     websiteUrl: user.websiteUrl || "", // Initialize with existing data or empty string
   });
- 
+
   // Function to upload a file to S3 and return ONLY the S3 key/path.
   // This assumes your backend's /upload endpoint returns a string like:
   // "File uploaded successfully. File path: <S3_OBJECT_KEY_HERE>"
@@ -30,13 +30,16 @@ const Update = ({ setOpenUpdate, user, currentUser }) => {
       formData.append("file", file);
       const res = await makeRequest.post("/upload", formData);
       const responseString = res.data; // Get the full response string
- 
+
       // --- FIX: Extract only the S3 object key from the response string ---
       const prefix = "File uploaded successfully. File path: ";
       if (responseString.startsWith(prefix)) {
         return responseString.substring(prefix.length); // Return only the S3 key
       }
-      console.warn("Upload response did not match expected format:", responseString);
+      console.warn(
+        "Upload response did not match expected format:",
+        responseString
+      );
       return responseString; // Fallback: return the original response if format unexpected
     } catch (err) {
       console.error("Error during file upload:", err);
@@ -44,20 +47,23 @@ const Update = ({ setOpenUpdate, user, currentUser }) => {
       throw err; // Re-throw the error so handleSubmit can catch it
     }
   };
- 
+
   const handleChange = (e) => {
     setTexts((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
- 
+
   const queryClient = useQueryClient();
- 
+
   const mutation = useMutation({
-    mutationFn: (userUpdateData) => { // Renamed 'user' to 'userUpdateData' for clarity
+    mutationFn: (userUpdateData) => {
+      // Renamed 'user' to 'userUpdateData' for clarity
       return makeRequest.put("/users", userUpdateData);
     },
     onSuccess: () => {
       // Invalidate and refetch user query to reflect changes on profile page
-      queryClient.invalidateQueries({ queryKey: ["user", currentUser.user.id] }); // Invalidate specific user's data
+      queryClient.invalidateQueries({
+        queryKey: ["user", currentUser.user.id],
+      }); // Invalidate specific user's data
       // Also invalidate the currentUser data in AuthContext if it's the current user's profile being updated
       // This is important if profilePic/coverPic are cached in AuthContext for navbar/leftbar
       queryClient.invalidateQueries({ queryKey: ["currentUser"] }); // Assuming AuthContext user is part of 'currentUser' query
@@ -70,16 +76,17 @@ const Update = ({ setOpenUpdate, user, currentUser }) => {
         error.response?.data?.message || error.message
       );
       alert(
-        "Failed to update profile: " + (error.response?.data?.message || "Unknown error occurred.")
+        "Failed to update profile: " +
+          (error.response?.data?.message || "Unknown error occurred.")
       );
     },
   });
- 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     let coverUrl = user.coverPic;
     let profileUrl = user.profilePic;
- 
+
     try {
       // Only upload if a new file is selected
       if (cover) {
@@ -92,7 +99,7 @@ const Update = ({ setOpenUpdate, user, currentUser }) => {
         profileUrl = await upload(profile);
         console.log("New profile URL/Key obtained:", profileUrl);
       }
- 
+
       // Ensure the correct ID is passed with the update
       const updatePayload = {
         ...texts,
@@ -108,7 +115,7 @@ const Update = ({ setOpenUpdate, user, currentUser }) => {
       // Do not proceed with profile update if image upload fails
     }
   };
- 
+
   return (
     <div className="update">
       <div className="wrapper">
@@ -215,5 +222,5 @@ const Update = ({ setOpenUpdate, user, currentUser }) => {
     </div>
   );
 };
- 
+
 export default Update;
